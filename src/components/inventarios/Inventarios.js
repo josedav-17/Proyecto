@@ -48,34 +48,39 @@ export default function Inventario() {
     }
   }
 
-  //borrar un inventario por id
-  const borrar = (id) => {
-    borrarInventarioPorID(id).then((res) => {
-      setInventarios(inventarios.filter((inventario) => inventario._id !== id));
+  //borrar
+  const borrar = async (inventarioId) => {
+    try {
+      await borrarInventarioPorID(inventarioId);
+      setInventarios(inventarios.filter((u) => u._id !== inventarioId));
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  
+
+  
+
+
+
+  //crear inventario de acuerdo a inventarioService
+  const crear = (inventario) => {
+    crearInventario(inventario).then((res) => {
+      setInventarios([...inventarios, res.data]);
     });
   };
 
 
-  //funcion post para crear un inventario
-  const crear = async () => {
-    const { data } = await crearInventario(inventario);
-    setInventarios([...inventarios, data]);
-    setInventario([]);
-  }
-  
-
-  //actualizar un inventario por id
-  const editar = (inventarioId) => {
-    try{
-      const { data } = editarInventarioPorID(inventarioId, data);
-      setInventarios(inventarios.map((inventario) => inventario._id === inventarioId ? data : inventario));
-    }
-    catch(e){
-      console.log(e);
-    }
-  }
-
-
+  //editar inventario de acuerdo a inventarioService
+  const editar = (inventario) => {
+    editarInventarioPorID(inventario._id, inventario).then((res) => {
+      setInventarios(
+        inventarios.map((inventario) =>
+          inventario._id === res.data._id ? res.data : inventario
+        )
+      );
+    });
+  };
 
 
   return (
